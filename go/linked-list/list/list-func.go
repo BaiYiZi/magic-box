@@ -67,19 +67,14 @@ func (list *List) String() string {
 	str += fmt.Sprintf("Length: %d\n", list.Length)
 	str += fmt.Sprintf("IsRestrictionType: %v\n", list.IsRestrictionType)
 	str += fmt.Sprintf("RestrictionType: %v\n", list.RestrictionType)
-	str += "Content: "
-
-	content, err := list.ToString()
-	if err == nil {
-		str += content
-	}
+	str += fmt.Sprintf("Content: %v\n", list.ToString())
 
 	return str
 }
 
-func (list *List) ToString() (string, error) {
+func (list *List) ToString() string {
 	if list.Length == 0 {
-		return StringEmpty, errListIsEmpty()
+		return StringEmpty
 	}
 
 	node := list.HeadPointer
@@ -99,7 +94,7 @@ func (list *List) ToString() (string, error) {
 
 	result += "nil"
 
-	return result, nil
+	return result
 }
 
 func AddSliceToList[T any](values *[]T, list *List) error {
@@ -139,6 +134,8 @@ func (list *List) DeleteNode(deleteNode *Node) {
 
 	if list.HeadPointer == deleteNode {
 		list.HeadPointer = list.HeadPointer.Next
+		list.Length--
+
 		return
 	}
 
@@ -149,6 +146,8 @@ func (list *List) DeleteNode(deleteNode *Node) {
 			pre = node
 			next = deleteNode.Next
 			pre.Next = next
+			list.Length--
+
 			return false
 		}
 
