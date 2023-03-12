@@ -62,3 +62,23 @@ func TestEqual(t *testing.T) {
 
 	fmt.Println(nodeA.Equal(nodeB, false))
 }
+
+func TestDeleteNode(t *testing.T) {
+	type S struct{}
+	values := []any{20021011, 1.83, "140", S{}, struct{ Name string }{"BaiYiZi"}}
+
+	lst, err := list.GenerateList(&values, nil)
+	if err != nil {
+		fmt.Println(fmt.Errorf("error: %s", err))
+	}
+
+	fmt.Println(lst)
+
+	node := lst.HeadPointer
+	lst.DeleteNode(node)
+	fmt.Println(lst)
+
+	node = lst.HeadPointer.Next.Next.Next
+	lst.DeleteNode(node)
+	fmt.Println(lst)
+}

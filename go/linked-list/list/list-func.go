@@ -131,3 +131,46 @@ func AddSliceToList[T any](values *[]T, list *List) error {
 
 	return nil
 }
+
+func (list *List) DeleteNode(deleteNode *Node) {
+	if deleteNode == nil {
+		return
+	}
+
+	if list.HeadPointer == deleteNode {
+		list.HeadPointer = list.HeadPointer.Next
+		return
+	}
+
+	var pre, next *Node
+
+	list.ForEach(func(i int, node *Node, lst *List) bool {
+		if node.Next.Equal(deleteNode, true) {
+			pre = node
+			next = deleteNode.Next
+			pre.Next = next
+			return false
+		}
+
+		return true
+	})
+}
+
+func (list *List) ForEach(f func(int, *Node, *List) bool) {
+	if list.HeadPointer == nil {
+		return
+	}
+
+	index := 0
+	node := list.HeadPointer
+
+	for node != nil {
+		isContinue := f(index, node, list)
+		if !isContinue {
+			break
+		}
+
+		index++
+		node = node.Next
+	}
+}

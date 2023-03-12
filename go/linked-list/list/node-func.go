@@ -17,7 +17,7 @@ func (node *Node) GetAddr() string {
 	if node == nil {
 		return StringEmpty
 	}
-	return fmt.Sprintf("%p\n", node)
+	return fmt.Sprintf("%p", node)
 }
 
 func (node *Node) Equal(nodeT *Node, judgeAddr bool) bool {
