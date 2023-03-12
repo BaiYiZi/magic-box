@@ -13,31 +13,10 @@ func GenerateList[T any](values *[]T, restrictionType reflect.Type) (*List, erro
 		list.IsRestrictionType = true
 	}
 
-	if values == nil || *values == nil || len(*values) == 0 {
-		return nil, errInitNilShouldNil()
+	err := AddSliceToList(values, list)
+	if err != nil {
+		return list, err
 	}
-
-	tmpList := &List{
-		HeadPointer:       nil,
-		Length:            0,
-		IsRestrictionType: list.IsRestrictionType,
-		RestrictionType:   list.RestrictionType,
-	}
-
-	for i, v := range *values {
-		err := tmpList.AddValueToList(v)
-
-		if err != nil {
-			if err.Error() == errNodeMatchTypeInList().Error() {
-				return nil, errInitValuesNotMatchType(i)
-			} else {
-				return nil, err
-			}
-		}
-	}
-
-	list.HeadPointer = tmpList.HeadPointer
-	list.Length = tmpList.Length
 
 	return list, nil
 }
@@ -121,4 +100,34 @@ func (list *List) ToString() (string, error) {
 	result += "nil"
 
 	return result, nil
+}
+
+func AddSliceToList[T any](values *[]T, list *List) error {
+	if values == nil || *values == nil || len(*values) == 0 {
+		return errInitNilShouldNil()
+	}
+
+	tmpList := &List{
+		HeadPointer:       nil,
+		Length:            0,
+		IsRestrictionType: list.IsRestrictionType,
+		RestrictionType:   list.RestrictionType,
+	}
+
+	for i, v := range *values {
+		err := tmpList.AddValueToList(v)
+
+		if err != nil {
+			if err.Error() == errNodeMatchTypeInList().Error() {
+				return errInitValuesNotMatchType(i)
+			} else {
+				return err
+			}
+		}
+	}
+
+	list.HeadPointer = tmpList.HeadPointer
+	list.Length += tmpList.Length
+
+	return nil
 }
