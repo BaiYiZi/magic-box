@@ -6,10 +6,6 @@ import (
 )
 
 var (
-	errInitNilShouldNil = func() error {
-		return errors.New("if you want an empty linked list, please change to nil")
-	}
-
 	errInitValuesNotMatchType = func(x int) error {
 		return fmt.Errorf("input values in index[%d] type does not match restriction type", x)
 	}

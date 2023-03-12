@@ -104,7 +104,7 @@ func (list *List) ToString() (string, error) {
 
 func AddSliceToList[T any](values *[]T, list *List) error {
 	if values == nil || *values == nil || len(*values) == 0 {
-		return errInitNilShouldNil()
+		return nil
 	}
 
 	tmpList := &List{
