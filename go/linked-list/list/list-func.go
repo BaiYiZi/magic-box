@@ -21,7 +21,7 @@ func GenerateList[T any](values *[]T, restrictionType reflect.Type) (*List, erro
 	return list, nil
 }
 
-func (list *List) AddValueToList(value any) error {
+func (list *List) AddValue(value any) error {
 	flagMatch := list.verifyType(value)
 
 	if !flagMatch {
@@ -115,7 +115,7 @@ func AddSliceToList[T any](values *[]T, list *List) error {
 	}
 
 	for i, v := range *values {
-		err := tmpList.AddValueToList(v)
+		err := tmpList.AddValue(v)
 
 		if err != nil {
 			if err.Error() == errNodeMatchTypeInList().Error() {
