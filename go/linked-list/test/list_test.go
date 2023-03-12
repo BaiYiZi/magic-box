@@ -51,3 +51,14 @@ func TestGenerateList(t *testing.T) {
 		fmt.Println(lst)
 	}
 }
+
+func TestEqual(t *testing.T) {
+	nodeA := list.GenerateNode(10)
+	nodeB := list.GenerateNode(10)
+	judgeAddr := true
+
+	fmt.Println(nodeA.Equal(nodeB, judgeAddr))
+	fmt.Println(nodeA.Equal(nodeA, judgeAddr))
+
+	fmt.Println(nodeA.Equal(nodeB, false))
+}
