@@ -80,10 +80,10 @@ func (list *List) verifyType(value any) bool {
 
 func (list *List) String() string {
 	if list == nil {
-		return stringEmpty
+		return StringEmpty
 	}
 
-	str := stringEmpty
+	str := StringEmpty
 
 	str += fmt.Sprintf("Length: %d\n", list.Length)
 	str += fmt.Sprintf("IsRestrictionType: %v\n", list.IsRestrictionType)
@@ -100,11 +100,11 @@ func (list *List) String() string {
 
 func (list *List) ToString() (string, error) {
 	if list.Length == 0 {
-		return stringEmpty, errListIsEmpty()
+		return StringEmpty, errListIsEmpty()
 	}
 
 	node := list.HeadPointer
-	result := stringEmpty
+	result := StringEmpty
 
 	for {
 		if node != nil {

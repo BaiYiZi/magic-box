@@ -24,5 +24,5 @@ var (
 )
 
 const (
-	stringEmpty = ""
+	StringEmpty = ""
 )
