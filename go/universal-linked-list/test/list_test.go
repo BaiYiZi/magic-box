@@ -57,7 +57,7 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(nil)
 		fmt.Println(lst)
 
-		err := lst.AddSliceToList(&[]any{1, "2", 3.4})
+		err := lst.AppendSliceToList(&[]any{1, "2", 3.4})
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
 		}
@@ -71,7 +71,7 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(reflect.TypeOf(0))
 		fmt.Println(lst)
 
-		err := lst.AddSliceToList(&[]any{1, 2, 3, 4})
+		err := lst.AppendSliceToList(&[]any{1, 2, 3, 4})
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
 		}
@@ -79,7 +79,7 @@ func TestGenerateEmptyList(t *testing.T) {
 	}
 }
 
-func TestAddSliceToList(t *testing.T) {
+func TestAppendSliceToList(t *testing.T) {
 	lst := list.GenerateEmptyList(nil)
 	fmt.Println(lst)
 
@@ -87,7 +87,7 @@ func TestAddSliceToList(t *testing.T) {
 	arr = nil
 	values := &arr
 	values = nil
-	err := lst.AddSliceToList(values)
+	err := lst.AppendSliceToList(values)
 
 	fmt.Println(fmt.Errorf("error: %s", err))
 }
@@ -136,4 +136,27 @@ func TestForEach(t *testing.T) {
 		fmt.Printf("(%v, %v)\n", i, nde.Value)
 		return true
 	})
+}
+
+func TestFrontAddValue(t *testing.T) {
+	lst := list.GenerateEmptyList(nil)
+	fmt.Println(lst)
+
+	lst.FrontAddValue("123")
+	fmt.Println(lst)
+
+	lst.FrontAddValue(456)
+
+	fmt.Println(lst)
+}
+
+func TestReverse(t *testing.T) {
+	lst := list.GenerateEmptyList(nil)
+	lst.FrontAddValue("123")
+	lst.FrontAddValue(456)
+	fmt.Println(lst)
+
+	err := lst.Reverse()
+	fmt.Println(err)
+	fmt.Println(lst)
 }

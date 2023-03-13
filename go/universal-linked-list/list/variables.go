@@ -5,6 +5,14 @@ import (
 )
 
 var (
+	errListLengthIsNil = func() error {
+		return fmt.Errorf("list length is nil")
+	}
+
+	errListIsNil = func() error {
+		return fmt.Errorf("list is nil")
+	}
+
 	errValueNotIsPtr = func() error {
 		return fmt.Errorf("value not is ptr")
 	}

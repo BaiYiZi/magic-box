@@ -27,7 +27,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*List, 
 		lst.restrictionType = restrictionType
 	}
 
-	err := lst.AddSliceToList(values)
+	err := lst.AppendSliceToList(values)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*List, 
 	return lst, nil
 }
 
-func (lst *List) AddSliceToList(slice any) error {
+func (lst *List) AppendSliceToList(slice any) error {
 	if reflect.TypeOf(slice).Kind() != reflect.Ptr {
 		return errValueNotIsPtr()
 	}
@@ -63,7 +63,7 @@ func (lst *List) AddSliceToList(slice any) error {
 
 	for i := 0; i < sli.Len(); i++ {
 		content := sli.Index(i).Interface()
-		err := tmpLst.AddValue(content)
+		err := tmpLst.AppendValue(content)
 
 		if err != nil {
 			if err.Error() == errNodeMatchTypeInList().Error() {
@@ -80,7 +80,11 @@ func (lst *List) AddSliceToList(slice any) error {
 	return nil
 }
 
-func (lst *List) AddValue(value any) error {
+func (lst *List) AppendValue(value any) error {
+	if lst == nil {
+		return errListIsNil()
+	}
+
 	if !lst.verifyType(value) {
 		return errNodeMatchTypeInList()
 	}
@@ -198,4 +202,59 @@ func (lst *List) ForEach(f func(int, *Node, *List) bool) {
 		index++
 		nde = nde.Next
 	}
+}
+
+func (lst *List) FrontAddValue(value any) error {
+	if lst == nil {
+		return errListIsNil()
+	}
+
+	if !lst.verifyType(value) {
+		return errNodeMatchTypeInList()
+	}
+
+	nde := GenerateNode(value)
+	if lst.HeadPointer == nil {
+		lst.HeadPointer = nde
+		lst.Length += 1
+
+		return nil
+	}
+
+	nde.Next = lst.HeadPointer
+	lst.HeadPointer = nde
+	lst.Length += 1
+
+	return nil
+}
+
+func (lst *List) Reverse() error {
+	if lst == nil {
+		return errListIsNil()
+	}
+
+	if lst.Length == 0 {
+		return errListLengthIsNil()
+	}
+
+	if lst.Length == 1 {
+		return nil
+	}
+
+	tmpLst := &List{
+		HeadPointer:     lst.HeadPointer,
+		Length:          lst.Length,
+		restrictionType: lst.restrictionType,
+	}
+
+	lst.Length = 0
+	lst.HeadPointer = nil
+
+	tmpLst.ForEach(func(i int, nde *Node, _ *List) bool {
+		lst.FrontAddValue(nde.Value)
+
+		return true
+	})
+
+	return nil
 }
