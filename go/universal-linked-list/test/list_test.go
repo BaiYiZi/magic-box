@@ -39,10 +39,10 @@ func TestGenerateInitList(t *testing.T) {
 	{
 		values := []int{110, 20, 30, 40, 50}
 		values = nil
-		arg := &values
-		arg = nil
+		slice := &values
+		slice = nil
 
-		lst, err := list.GenerateInitList(arg, nil)
+		lst, err := list.GenerateInitList(slice, nil)
 
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
@@ -53,7 +53,36 @@ func TestGenerateInitList(t *testing.T) {
 }
 
 func TestGenerateEmptyList(t *testing.T) {
+	{
+		lst := list.GenerateEmptyList(nil)
+		fmt.Println(lst)
 
+		lst.AddSliceToList(&[]any{1, "2", 3.4})
+		fmt.Println(lst)
+	}
+
+	fmt.Println("--------------------")
+
+	{
+		lst := list.GenerateEmptyList(reflect.TypeOf(0))
+		fmt.Println(lst)
+
+		lst.AddSliceToList(&[]any{1, 2, 3, 4})
+		fmt.Println(lst)
+	}
+}
+
+func TestAddSliceToList(t *testing.T) {
+	lst := list.GenerateEmptyList(nil)
+	fmt.Println(lst)
+
+	arr := []int{}
+	arr = nil
+	values := &arr
+	values = nil
+	err := lst.AddSliceToList(values)
+
+	fmt.Println(err)
 }
 
 func TestEqual(t *testing.T) {
@@ -65,7 +94,6 @@ func TestEqual(t *testing.T) {
 	fmt.Println(nodeA.Equal(nodeA, judgeAddr))
 
 	fmt.Println(nodeA.Equal(nodeB, false))
-
 }
 
 func TestDeleteNode(t *testing.T) {

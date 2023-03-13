@@ -5,8 +5,20 @@ import (
 )
 
 var (
-	errInitNilShouldNil = func() error {
-		return fmt.Errorf("if you want an empty linked list, please call \"GenerateEmptyList()\"")
+	errValueNotIsPtr = func() error {
+		return fmt.Errorf("value not is ptr")
+	}
+
+	errSliceIsNil = func() error {
+		return fmt.Errorf("slice is nil")
+	}
+
+	errValueNotArrayOrSlice = func() error {
+		return fmt.Errorf("not is slice or array")
+	}
+
+	errLengthEqualZero = func() error {
+		return fmt.Errorf("length = 0 with array or slice ")
 	}
 
 	errInitValuesNotMatchType = func(x int) error {

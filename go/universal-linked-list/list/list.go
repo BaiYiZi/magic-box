@@ -27,7 +27,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, 
 		lst.restrictionType = restrictionType
 	}
 
-	err := AddSliceToList(values, lst)
+	err := lst.AddSliceToList(values)
 	if err != nil {
 		return lst, err
 	}
@@ -35,9 +35,19 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, 
 	return lst, nil
 }
 
-func AddSliceToList[T any](values *[]T, lst *list) error {
-	if values == nil || *values == nil || len(*values) == 0 {
-		return errInitNilShouldNil()
+func (lst *list) AddSliceToList(slice any) error {
+	if reflect.TypeOf(slice).Kind() != reflect.Ptr {
+		return errValueNotIsPtr()
+	}
+
+	if reflect.ValueOf(slice).Elem().Kind() == reflect.Invalid {
+		return errSliceIsNil()
+	}
+
+	v := reflect.ValueOf(slice).Elem().Interface()
+	vtk := reflect.TypeOf(v).Kind()
+	if !(vtk == reflect.Array || vtk == reflect.Slice) {
+		return errValueNotArrayOrSlice()
 	}
 
 	tmpLst := &list{
@@ -46,8 +56,14 @@ func AddSliceToList[T any](values *[]T, lst *list) error {
 		restrictionType: lst.restrictionType,
 	}
 
-	for i, v := range *values {
-		err := tmpLst.AddValue(v)
+	sli := reflect.ValueOf(v)
+	if sli.Len() == 0 {
+		return errLengthEqualZero()
+	}
+
+	for i := 0; i < sli.Len(); i++ {
+		content := sli.Index(i).Interface()
+		err := tmpLst.AddValue(content)
 
 		if err != nil {
 			if err.Error() == errNodeMatchTypeInList().Error() {
@@ -107,7 +123,7 @@ func (lst *list) String() string {
 
 	str += fmt.Sprintf("Length: %d\n", lst.Length)
 	str += fmt.Sprintf("RestrictionType: %v\n", lst.restrictionType)
-	str += fmt.Sprintf("Content: %v\n", lst.ContentString())
+	str += fmt.Sprintf("Content: %v", lst.ContentString())
 
 	return str
 }
@@ -122,7 +138,7 @@ func (lst *list) ContentString() string {
 
 	for {
 		if nde != nil {
-			result += fmt.Sprintf("%v -> ", nde.Value)
+			result += fmt.Sprintf("(%v, %v) -> ", nde.Value, nde.nodeType)
 		}
 
 		nde = nde.Next
@@ -142,7 +158,7 @@ func (lst *list) DeleteNode(deleteNode *node) {
 		return
 	}
 
-	if lst.HeadPointer == deleteNode {
+	if lst.HeadPointer.Equal(deleteNode, true) {
 		lst.HeadPointer = lst.HeadPointer.Next
 		lst.Length--
 
