@@ -5,6 +5,12 @@ import (
 	"reflect"
 )
 
+type Node struct {
+	Next  *Node
+	Value any
+	Type  reflect.Type
+}
+
 func GenerateNode[T any](value T) *Node {
 	node := &Node{nil, value, nil}
 

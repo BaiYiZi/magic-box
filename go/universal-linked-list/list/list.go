@@ -5,12 +5,17 @@ import (
 	"reflect"
 )
 
+type List struct {
+	HeadPointer     *Node
+	Length          int
+	RestrictionType reflect.Type
+}
+
 func GenerateList[T any](values *[]T, restrictionType reflect.Type) (*List, error) {
 	list := &List{}
 
 	if restrictionType != nil {
 		list.RestrictionType = restrictionType
-		list.IsRestrictionType = true
 	}
 
 	err := AddSliceToList(values, list)
@@ -19,6 +24,35 @@ func GenerateList[T any](values *[]T, restrictionType reflect.Type) (*List, erro
 	}
 
 	return list, nil
+}
+
+func AddSliceToList[T any](values *[]T, list *List) error {
+	if values == nil || *values == nil || len(*values) == 0 {
+		return nil
+	}
+
+	tmpList := &List{
+		HeadPointer:     nil,
+		Length:          0,
+		RestrictionType: list.RestrictionType,
+	}
+
+	for i, v := range *values {
+		err := tmpList.AddValue(v)
+
+		if err != nil {
+			if err.Error() == errNodeMatchTypeInList().Error() {
+				return errInitValuesNotMatchType(i)
+			} else {
+				return err
+			}
+		}
+	}
+
+	list.HeadPointer = tmpList.HeadPointer
+	list.Length += tmpList.Length
+
+	return nil
 }
 
 func (list *List) AddValue(value any) error {
@@ -50,7 +84,7 @@ func (list *List) AddValue(value any) error {
 }
 
 func (list *List) verifyType(value any) bool {
-	if !list.IsRestrictionType {
+	if list.RestrictionType == nil {
 		return true
 	}
 
@@ -65,7 +99,6 @@ func (list *List) String() string {
 	str := StringEmpty
 
 	str += fmt.Sprintf("Length: %d\n", list.Length)
-	str += fmt.Sprintf("IsRestrictionType: %v\n", list.IsRestrictionType)
 	str += fmt.Sprintf("RestrictionType: %v\n", list.RestrictionType)
 	str += fmt.Sprintf("Content: %v\n", list.ToString())
 
@@ -95,36 +128,6 @@ func (list *List) ToString() string {
 	result += "nil"
 
 	return result
-}
-
-func AddSliceToList[T any](values *[]T, list *List) error {
-	if values == nil || *values == nil || len(*values) == 0 {
-		return nil
-	}
-
-	tmpList := &List{
-		HeadPointer:       nil,
-		Length:            0,
-		IsRestrictionType: list.IsRestrictionType,
-		RestrictionType:   list.RestrictionType,
-	}
-
-	for i, v := range *values {
-		err := tmpList.AddValue(v)
-
-		if err != nil {
-			if err.Error() == errNodeMatchTypeInList().Error() {
-				return errInitValuesNotMatchType(i)
-			} else {
-				return err
-			}
-		}
-	}
-
-	list.HeadPointer = tmpList.HeadPointer
-	list.Length += tmpList.Length
-
-	return nil
 }
 
 func (list *List) DeleteNode(deleteNode *Node) {

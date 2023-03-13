@@ -61,6 +61,7 @@ func TestEqual(t *testing.T) {
 	fmt.Println(nodeA.Equal(nodeA, judgeAddr))
 
 	fmt.Println(nodeA.Equal(nodeB, false))
+
 }
 
 func TestDeleteNode(t *testing.T) {
@@ -81,4 +82,8 @@ func TestDeleteNode(t *testing.T) {
 	node = lst.HeadPointer.Next.Next.Next
 	lst.DeleteNode(node)
 	fmt.Println(lst)
+}
+
+func TestX(t *testing.T) {
+
 }
