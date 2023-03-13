@@ -5,14 +5,14 @@ import (
 	"reflect"
 )
 
-type list struct {
-	HeadPointer     *node
+type List struct {
+	HeadPointer     *Node
 	Length          int
 	restrictionType reflect.Type
 }
 
-func GenerateEmptyList(restrictionType reflect.Type) *list {
-	lst := &list{}
+func GenerateEmptyList(restrictionType reflect.Type) *List {
+	lst := &List{}
 	if restrictionType != nil {
 		lst.restrictionType = restrictionType
 	}
@@ -20,8 +20,8 @@ func GenerateEmptyList(restrictionType reflect.Type) *list {
 	return lst
 }
 
-func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, error) {
-	lst := &list{}
+func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*List, error) {
+	lst := &List{}
 
 	if restrictionType != nil {
 		lst.restrictionType = restrictionType
@@ -35,7 +35,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, 
 	return lst, nil
 }
 
-func (lst *list) AddSliceToList(slice any) error {
+func (lst *List) AddSliceToList(slice any) error {
 	if reflect.TypeOf(slice).Kind() != reflect.Ptr {
 		return errValueNotIsPtr()
 	}
@@ -50,7 +50,7 @@ func (lst *list) AddSliceToList(slice any) error {
 		return errValueNotArrayOrSlice()
 	}
 
-	tmpLst := &list{
+	tmpLst := &List{
 		HeadPointer:     nil,
 		Length:          0,
 		restrictionType: lst.restrictionType,
@@ -80,7 +80,7 @@ func (lst *list) AddSliceToList(slice any) error {
 	return nil
 }
 
-func (lst *list) AddValue(value any) error {
+func (lst *List) AddValue(value any) error {
 	if !lst.verifyType(value) {
 		return errNodeMatchTypeInList()
 	}
@@ -106,7 +106,7 @@ func (lst *list) AddValue(value any) error {
 	return nil
 }
 
-func (lst *list) verifyType(value any) bool {
+func (lst *List) verifyType(value any) bool {
 	if lst.restrictionType == nil {
 		return true
 	}
@@ -114,12 +114,12 @@ func (lst *list) verifyType(value any) bool {
 	return lst.restrictionType == reflect.TypeOf(value)
 }
 
-func (lst *list) String() string {
+func (lst *List) String() string {
 	if lst == nil {
-		return StringEmpty
+		return stringEmpty
 	}
 
-	str := StringEmpty
+	str := stringEmpty
 
 	str += fmt.Sprintf("Length: %d\n", lst.Length)
 	str += fmt.Sprintf("RestrictionType: %v\n", lst.restrictionType)
@@ -128,13 +128,13 @@ func (lst *list) String() string {
 	return str
 }
 
-func (lst *list) ContentString() string {
+func (lst *List) ContentString() string {
 	if lst.Length == 0 {
-		return StringEmpty
+		return stringEmpty
 	}
 
 	nde := lst.HeadPointer
-	result := StringEmpty
+	result := stringEmpty
 
 	for {
 		if nde != nil {
@@ -153,7 +153,7 @@ func (lst *list) ContentString() string {
 	return result
 }
 
-func (lst *list) DeleteNode(deleteNode *node) {
+func (lst *List) DeleteNode(deleteNode *Node) {
 	if deleteNode == nil {
 		return
 	}
@@ -165,9 +165,9 @@ func (lst *list) DeleteNode(deleteNode *node) {
 		return
 	}
 
-	var pre, next *node
+	var pre, next *Node
 
-	lst.ForEach(func(i int, nde *node, lst *list) bool {
+	lst.ForEach(func(i int, nde *Node, lst *List) bool {
 		if nde.Next.Equal(deleteNode, true) {
 			pre = nde
 			next = deleteNode.Next
@@ -181,7 +181,7 @@ func (lst *list) DeleteNode(deleteNode *node) {
 	})
 }
 
-func (lst *list) ForEach(f func(int, *node, *list) bool) {
+func (lst *List) ForEach(f func(int, *Node, *List) bool) {
 	if lst.HeadPointer == nil {
 		return
 	}

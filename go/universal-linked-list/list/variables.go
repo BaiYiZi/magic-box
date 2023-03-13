@@ -31,5 +31,5 @@ var (
 )
 
 const (
-	StringEmpty = ""
+	stringEmpty = ""
 )

@@ -57,7 +57,11 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(nil)
 		fmt.Println(lst)
 
-		lst.AddSliceToList(&[]any{1, "2", 3.4})
+		err := lst.AddSliceToList(&[]any{1, "2", 3.4})
+		if err != nil {
+			fmt.Println(fmt.Errorf("error: %s", err))
+		}
+
 		fmt.Println(lst)
 	}
 
@@ -67,7 +71,10 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(reflect.TypeOf(0))
 		fmt.Println(lst)
 
-		lst.AddSliceToList(&[]any{1, 2, 3, 4})
+		err := lst.AddSliceToList(&[]any{1, 2, 3, 4})
+		if err != nil {
+			fmt.Println(fmt.Errorf("error: %s", err))
+		}
 		fmt.Println(lst)
 	}
 }
@@ -82,7 +89,7 @@ func TestAddSliceToList(t *testing.T) {
 	values = nil
 	err := lst.AddSliceToList(values)
 
-	fmt.Println(err)
+	fmt.Println(fmt.Errorf("error: %s", err))
 }
 
 func TestEqual(t *testing.T) {
@@ -114,4 +121,19 @@ func TestDeleteNode(t *testing.T) {
 	node = lst.HeadPointer.Next.Next.Next
 	lst.DeleteNode(node)
 	fmt.Println(lst)
+}
+
+func TestForEach(t *testing.T) {
+	values := &[]int{1, 2, 3, 4, 5}
+	lst, err := list.GenerateInitList(values, nil)
+	if err != nil {
+		fmt.Println(fmt.Errorf("error: %s", err))
+	}
+
+	fmt.Println(lst)
+
+	lst.ForEach(func(i int, nde *list.Node, lst *list.List) bool {
+		fmt.Printf("(%v, %v)\n", i, nde.Value)
+		return true
+	})
 }
