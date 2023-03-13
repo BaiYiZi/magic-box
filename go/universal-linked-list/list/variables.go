@@ -9,7 +9,7 @@ var (
 		return fmt.Errorf("value not is ptr")
 	}
 
-	errSliceIsNil = func() error {
+	errSliceIsInvalid = func() error {
 		return fmt.Errorf("slice is nil")
 	}
 

@@ -41,7 +41,7 @@ func (lst *list) AddSliceToList(slice any) error {
 	}
 
 	if reflect.ValueOf(slice).Elem().Kind() == reflect.Invalid {
-		return errSliceIsNil()
+		return errSliceIsInvalid()
 	}
 
 	v := reflect.ValueOf(slice).Elem().Interface()
