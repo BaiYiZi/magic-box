@@ -29,7 +29,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, 
 
 	err := lst.AddSliceToList(values)
 	if err != nil {
-		return lst, err
+		return nil, err
 	}
 
 	return lst, nil
