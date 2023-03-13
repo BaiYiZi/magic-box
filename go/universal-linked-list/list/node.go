@@ -5,38 +5,39 @@ import (
 	"reflect"
 )
 
-type Node struct {
-	Next  *Node
-	Value any
-	Type  reflect.Type
+type node struct {
+	Next     *node
+	Value    any
+	nodeType reflect.Type
 }
 
-func GenerateNode[T any](value T) *Node {
-	node := &Node{nil, value, nil}
+func GenerateNode[T any](value T) *node {
+	nde := &node{nil, value, nil}
 
-	node.Type = reflect.TypeOf(node.Value)
+	nde.nodeType = reflect.TypeOf(nde.Value)
 
-	return node
+	return nde
 }
 
-func (node *Node) GetAddr() string {
-	if node == nil {
+func (nde *node) getAddr() string {
+	if nde == nil {
 		return StringEmpty
 	}
-	return fmt.Sprintf("%p", node)
+
+	return fmt.Sprintf("%p", nde)
 }
 
-func (node *Node) Equal(nodeT *Node, judgeAddr bool) bool {
-	if node.Type != nodeT.Type {
+func (nde *node) Equal(ndeT *node, judgeAddr bool) bool {
+	if nde.nodeType != ndeT.nodeType {
 		return false
 	}
 
-	if node.Value != nodeT.Value {
+	if nde.Value != ndeT.Value {
 		return false
 	}
 
 	if judgeAddr {
-		if !(node.GetAddr() == nodeT.GetAddr()) {
+		if !(nde.getAddr() == ndeT.getAddr()) {
 			return false
 		}
 	}

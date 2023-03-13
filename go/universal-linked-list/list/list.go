@@ -5,40 +5,49 @@ import (
 	"reflect"
 )
 
-type List struct {
-	HeadPointer     *Node
+type list struct {
+	HeadPointer     *node
 	Length          int
-	RestrictionType reflect.Type
+	restrictionType reflect.Type
 }
 
-func GenerateList[T any](values *[]T, restrictionType reflect.Type) (*List, error) {
-	list := &List{}
+func GenerateEmptyList(restrictionType reflect.Type) *list {
+	lst := &list{}
+	if restrictionType != nil {
+		lst.restrictionType = restrictionType
+	}
+
+	return lst
+}
+
+func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*list, error) {
+	lst := &list{}
 
 	if restrictionType != nil {
-		list.RestrictionType = restrictionType
+		lst.restrictionType = restrictionType
 	}
 
-	err := AddSliceToList(values, list)
+	err := AddSliceToList(values, lst)
 	if err != nil {
-		return list, err
+		return lst, err
 	}
 
-	return list, nil
+	return lst, nil
 }
 
-func AddSliceToList[T any](values *[]T, list *List) error {
+func AddSliceToList[T any](values *[]T, lst *list) error {
 	if values == nil || *values == nil || len(*values) == 0 {
-		return nil
+		return errInitNilShouldNil()
 	}
 
-	tmpList := &List{
+	tmpLst := &list{
 		HeadPointer:     nil,
 		Length:          0,
-		RestrictionType: list.RestrictionType,
+		restrictionType: lst.restrictionType,
 	}
 
 	for i, v := range *values {
-		err := tmpList.AddValue(v)
+		err := tmpLst.AddValue(v)
 
 		if err != nil {
 			if err.Error() == errNodeMatchTypeInList().Error() {
@@ -49,78 +58,76 @@ func AddSliceToList[T any](values *[]T, list *List) error {
 		}
 	}
 
-	list.HeadPointer = tmpList.HeadPointer
-	list.Length += tmpList.Length
+	lst.HeadPointer = tmpLst.HeadPointer
+	lst.Length += tmpLst.Length
 
 	return nil
 }
 
-func (list *List) AddValue(value any) error {
-	flagMatch := list.verifyType(value)
-
-	if !flagMatch {
+func (lst *list) AddValue(value any) error {
+	if !lst.verifyType(value) {
 		return errNodeMatchTypeInList()
 	}
 
-	node := GenerateNode(value)
+	nde := GenerateNode(value)
 
-	if list.HeadPointer == nil {
-		list.HeadPointer = node
-		list.Length += 1
+	if lst.HeadPointer == nil {
+		lst.HeadPointer = nde
+		lst.Length += 1
 
 		return nil
 	}
 
-	last := list.HeadPointer
+	last := lst.HeadPointer
 
 	for last.Next != nil {
 		last = last.Next
 	}
 
-	last.Next = node
-	list.Length += 1
+	last.Next = nde
+	lst.Length += 1
 
 	return nil
 }
 
-func (list *List) verifyType(value any) bool {
-	if list.RestrictionType == nil {
+func (lst *list) verifyType(value any) bool {
+	if lst.restrictionType == nil {
 		return true
 	}
 
-	return list.RestrictionType == reflect.TypeOf(value)
+	return lst.restrictionType == reflect.TypeOf(value)
 }
 
-func (list *List) String() string {
-	if list == nil {
+func (lst *list) String() string {
+	if lst == nil {
 		return StringEmpty
 	}
 
 	str := StringEmpty
 
-	str += fmt.Sprintf("Length: %d\n", list.Length)
-	str += fmt.Sprintf("RestrictionType: %v\n", list.RestrictionType)
-	str += fmt.Sprintf("Content: %v\n", list.ToString())
+	str += fmt.Sprintf("Length: %d\n", lst.Length)
+	str += fmt.Sprintf("RestrictionType: %v\n", lst.restrictionType)
+	str += fmt.Sprintf("Content: %v\n", lst.ContentString())
 
 	return str
 }
 
-func (list *List) ToString() string {
-	if list.Length == 0 {
+func (lst *list) ContentString() string {
+	if lst.Length == 0 {
 		return StringEmpty
 	}
 
-	node := list.HeadPointer
+	nde := lst.HeadPointer
 	result := StringEmpty
 
 	for {
-		if node != nil {
-			result += fmt.Sprintf("%v -> ", node.Value)
+		if nde != nil {
+			result += fmt.Sprintf("%v -> ", nde.Value)
 		}
 
-		node = node.Next
+		nde = nde.Next
 
-		if node == nil {
+		if nde == nil {
 			break
 		}
 	}
@@ -130,26 +137,26 @@ func (list *List) ToString() string {
 	return result
 }
 
-func (list *List) DeleteNode(deleteNode *Node) {
+func (lst *list) DeleteNode(deleteNode *node) {
 	if deleteNode == nil {
 		return
 	}
 
-	if list.HeadPointer == deleteNode {
-		list.HeadPointer = list.HeadPointer.Next
-		list.Length--
+	if lst.HeadPointer == deleteNode {
+		lst.HeadPointer = lst.HeadPointer.Next
+		lst.Length--
 
 		return
 	}
 
-	var pre, next *Node
+	var pre, next *node
 
-	list.ForEach(func(i int, node *Node, lst *List) bool {
-		if node.Next.Equal(deleteNode, true) {
-			pre = node
+	lst.ForEach(func(i int, nde *node, lst *list) bool {
+		if nde.Next.Equal(deleteNode, true) {
+			pre = nde
 			next = deleteNode.Next
 			pre.Next = next
-			list.Length--
+			lst.Length--
 
 			return false
 		}
@@ -158,21 +165,21 @@ func (list *List) DeleteNode(deleteNode *Node) {
 	})
 }
 
-func (list *List) ForEach(f func(int, *Node, *List) bool) {
-	if list.HeadPointer == nil {
+func (lst *list) ForEach(f func(int, *node, *list) bool) {
+	if lst.HeadPointer == nil {
 		return
 	}
 
 	index := 0
-	node := list.HeadPointer
+	nde := lst.HeadPointer
 
-	for node != nil {
-		isContinue := f(index, node, list)
+	for nde != nil {
+		isContinue := f(index, nde, lst)
 		if !isContinue {
 			break
 		}
 
 		index++
-		node = node.Next
+		nde = nde.Next
 	}
 }

@@ -8,12 +8,12 @@ import (
 	"github.com/BaiYiZi/magic-box/go/linked-list/list"
 )
 
-func TestGenerateList(t *testing.T) {
+func TestGenerateInitList(t *testing.T) {
 	{
 		type S struct{}
 		values := []any{20021011, 1.83, "140", S{}, struct{ Name string }{"BaiYiZi"}}
 
-		lst, err := list.GenerateList(&values, nil)
+		lst, err := list.GenerateInitList(&values, nil)
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
 		}
@@ -25,7 +25,7 @@ func TestGenerateList(t *testing.T) {
 
 	{
 		values := []int{1, 2, 3, 4, 5}
-		lst, err := list.GenerateList(&values, reflect.TypeOf(values[0]))
+		lst, err := list.GenerateInitList(&values, reflect.TypeOf(values[0]))
 
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
@@ -42,7 +42,7 @@ func TestGenerateList(t *testing.T) {
 		arg := &values
 		arg = nil
 
-		lst, err := list.GenerateList(arg, nil)
+		lst, err := list.GenerateInitList(arg, nil)
 
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
@@ -50,6 +50,10 @@ func TestGenerateList(t *testing.T) {
 
 		fmt.Println(lst)
 	}
+}
+
+func TestGenerateEmptyList(t *testing.T) {
+
 }
 
 func TestEqual(t *testing.T) {
@@ -68,7 +72,7 @@ func TestDeleteNode(t *testing.T) {
 	type S struct{}
 	values := []any{20021011, 1.83, "140", S{}, struct{ Name string }{"BaiYiZi"}}
 
-	lst, err := list.GenerateList(&values, nil)
+	lst, err := list.GenerateInitList(&values, nil)
 	if err != nil {
 		fmt.Println(fmt.Errorf("error: %s", err))
 	}
@@ -82,8 +86,4 @@ func TestDeleteNode(t *testing.T) {
 	node = lst.HeadPointer.Next.Next.Next
 	lst.DeleteNode(node)
 	fmt.Println(lst)
-}
-
-func TestX(t *testing.T) {
-
 }
