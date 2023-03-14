@@ -1,1 +1,1 @@
-![code-organization](https://raw.githubusercontent.com/baiyizi/magic-box/main/go/universal-linked-list/image/code-organization.png "code-organization")
+![code-organization](https://github.com/BaiYiZi/magic-box/blob/main/go/universal-linked-list/image/code-organization.png "code-organization")
