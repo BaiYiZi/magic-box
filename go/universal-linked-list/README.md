@@ -1,1 +1,1 @@
-![code-organization][https://github.com/baiyizi/magic-box/blob/main/go/universal-linked-list/image/code-organization.png?raw=true]
+![code-organization][https://raw.githubusercontent.com/baiyizi/magic-box/main/go/universal-linked-list/image/code-organization.png]
