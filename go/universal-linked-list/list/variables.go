@@ -26,7 +26,7 @@ var (
 	}
 
 	errLengthEqualZero = func() error {
-		return fmt.Errorf("length = 0 with array or slice ")
+		return fmt.Errorf("length = 0 with array or slice")
 	}
 
 	errInitValuesNotMatchType = func(x int) error {
