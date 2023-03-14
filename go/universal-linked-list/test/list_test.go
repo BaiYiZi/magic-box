@@ -57,7 +57,7 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(nil)
 		fmt.Println(lst)
 
-		err := lst.AppendSliceToList(&[]any{1, "2", 3.4})
+		err := lst.AppendSlice(&[]any{1, "2", 3.4})
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
 		}
@@ -71,7 +71,7 @@ func TestGenerateEmptyList(t *testing.T) {
 		lst := list.GenerateEmptyList(reflect.TypeOf(0))
 		fmt.Println(lst)
 
-		err := lst.AppendSliceToList(&[]any{1, 2, 3, 4})
+		err := lst.AppendSlice(&[]any{1, 2, 3, 4})
 		if err != nil {
 			fmt.Println(fmt.Errorf("error: %s", err))
 		}
@@ -79,7 +79,7 @@ func TestGenerateEmptyList(t *testing.T) {
 	}
 }
 
-func TestAppendSliceToList(t *testing.T) {
+func TestAppendSlice(t *testing.T) {
 	lst := list.GenerateEmptyList(nil)
 	fmt.Println(lst)
 
@@ -87,7 +87,7 @@ func TestAppendSliceToList(t *testing.T) {
 	arr = nil
 	values := &arr
 	values = nil
-	err := lst.AppendSliceToList(values)
+	err := lst.AppendSlice(values)
 
 	fmt.Println(fmt.Errorf("error: %s", err))
 }

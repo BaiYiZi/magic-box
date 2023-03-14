@@ -27,7 +27,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*List, 
 		lst.restrictionType = restrictionType
 	}
 
-	err := lst.AppendSliceToList(values)
+	err := lst.AppendSlice(values)
 	if err != nil {
 		return nil, err
 	}
@@ -35,7 +35,7 @@ func GenerateInitList[T any](values *[]T, restrictionType reflect.Type) (*List, 
 	return lst, nil
 }
 
-func (lst *List) AppendSliceToList(slice any) error {
+func (lst *List) AppendSlice(slice any) error {
 	if reflect.TypeOf(slice).Kind() != reflect.Ptr {
 		return errValueNotIsPtr()
 	}
