@@ -1,0 +1,16 @@
+{
+  "name": "js-mongo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "echo please run command \\'npm run test *_test\\'",
+    "test": "node test/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "mongodb": "^5.1.0"
+  }
+}
