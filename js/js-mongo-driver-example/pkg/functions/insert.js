@@ -1,6 +1,6 @@
 import { client } from "../config.js";
 
-export async function insert(doc, dbName, collectionName) {
+export async function insertOne(doc, dbName, collectionName) {
   try {
     await client.connect();
 

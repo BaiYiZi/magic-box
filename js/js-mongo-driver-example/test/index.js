@@ -1,4 +1,4 @@
-import { insertTest } from "./functions_test/insert_test.js";
+import { insertOneTest } from "./functions_test/insert_one_test.js";
 import { dbIsExistsTest } from "./functions_test/db_is_exists_test.js";
 import { findTest } from "./functions_test/find_test.js";
 
@@ -13,8 +13,8 @@ switch (testFileName) {
     findTest();
     break;
 
-  case "insert_test":
-    insertTest();
+  case "insert_one_test":
+    insertOneTest();
     break;
 
   default:
